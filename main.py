@@ -3,11 +3,18 @@ from telethon.tl.types import UserStatusOnline
 import asyncio
 import requests
 
+# =========================
+# TELEGRAM API (حسابك)
+# =========================
 api_id = 20772917
 api_hash = "775e8d51df877fd040a882e63fe94cad"
 
+# الشخص اللي تراقبه
 username = "@non_899"
 
+# =========================
+# BOT INFO (الإشعار)
+# =========================
 BOT_TOKEN = "6544064207:AAEtMyFiquuJaX1SR3W8eE6pWqnhrm6RCs0"
 CHAT_ID = "6279357262"
 
@@ -17,40 +24,38 @@ was_online = False
 
 def send_message(text):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-
     data = {
         "chat_id": CHAT_ID,
         "text": text
     }
-
     requests.post(url, data=data)
 
 async def main():
     global was_online
 
-    print("STARTED")
-
     await client.start()
-
-    print("LOGGED IN")
+    print("🚀 BOT STARTED")
 
     while True:
-        user = await client.get_entity(username)
+        try:
+            user = await client.get_entity(username)
 
-        print("CHECKING...")
+            # إذا Online
+            if isinstance(user.status, UserStatusOnline):
 
-        if isinstance(user.status, UserStatusOnline):
+                if not was_online:
+                    print("🔔 ONLINE DETECTED")
+                    send_message(f"🔔 {username} صار ONLINE!")
+                    was_online = True
 
-            print("ONLINE!")
+            else:
+                was_online = False
 
-            if not was_online:
-                send_message(f"{username} is ONLINE!")
-                was_online = True
+            await asyncio.sleep(10)
 
-        else:
-            was_online = False
-
-        await asyncio.sleep(10)
+        except Exception as e:
+            print("ERROR:", e)
+            await asyncio.sleep(5)
 
 with client:
     client.loop.run_until_complete(main())
