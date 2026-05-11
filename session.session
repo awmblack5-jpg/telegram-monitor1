@@ -7,11 +7,8 @@ client = TelegramClient("session", api_id, api_hash)
 
 async def main():
     await client.start()
-
     me = await client.get_me()
-    print("Logged in as:", me.username)
-
-    print("SESSION CREATED SUCCESSFULLY")
+    print("LOGGED IN AS:", me.username)
 
 with client:
     client.loop.run_until_complete(main())
