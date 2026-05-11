@@ -1,0 +1,14 @@
+from telethon import TelegramClient
+
+api_id = 20772917
+api_hash = "775e8d51df877fd040a882e63fe94cad"
+
+client = TelegramClient("session", api_id, api_hash)
+
+async def main():
+    await client.start()
+    me = await client.get_me()
+    print("LOGGED IN AS:", me.username)
+
+with client:
+    client.loop.run_until_complete(main())
